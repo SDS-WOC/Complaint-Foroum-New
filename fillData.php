@@ -39,10 +39,11 @@
 	    	// if there are no errors, save user to database
 	    	if (count($errors) == 0) {
 	    		$password = md5($password_1); //encrypt password
-	    		$sql = "INSERT INTO Data  (name, roomno, enrollmentno, password)
+	    		$sql = "INSERT INTO Data  (Name, RoomNo, EnrollmentNo, Password)
                                 VALUES ('$name', '$roomno', '$enrollmentno', '$password')";
 	    		mysqli_query($db, $sql);
 	    		$_SESSION['name'] = $name;
+	    		$_SESSION['enrollmentno']= $enrollmentno;
 	    		$_SESSION['success'] = "Now, You can easily login";
 	    		header('location: redirect.php'); //redirect user to login portal
 	    	}
@@ -70,6 +71,7 @@
 	    		if (mysqli_num_rows($result) == 1) {
 	    			//log user in
 	    			$_SESSION['name'] = $name;
+	    			$_SESSION['enrollmentno']= $enrollmentno;
 	    			$_SESSION['success']= "You are now logged in";
 	    			header('location: home.php');
 	    		}else{
@@ -80,16 +82,35 @@
 
 	    }
 
+	    //from admin page
+	    if (isset($_POST['Go'])) {
+	    	$adminpass = mysqli_real_escape_string($db, $_POST['adminpass']);
+
+	    	if (empty($adminpass)) {
+	    		array_push($errors, "Invalid request");
+	    	}
+	    	if (count($errors) == 0){
+	    	if ($adminpass == "greatabhi") {
+	    		header('location: main.html');
+	    	}else{
+	    		array_push($errors, "wrong password");
+	    	}
+
+	    	}}	
+
 	    //after registration
 	    if (isset($_GET['Go Back'])) {
 	    	session_destroy();
 	    	unset($_SESSION['name']);
 	    } 
 
-	    //logout
-	    if (isset($_GET['Logout'])) {
+    //logout
+	    if (isset($_POST['Logout'])) {
 	    	session_destroy();
 	    	unset($_SESSION['enrollmentno']);
 	    } 
+
+	  
+	    
 
     ?>
